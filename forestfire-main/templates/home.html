@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FWI Prediction - Forest Fire Prediction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .nav {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-item strong {
+            color: #667eea;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 FWI Prediction</h1>
+            <p>Forest Weather Index Calculator</p>
+            <div class="nav">
+                <a href="/">Home</a>
+                <a href="/predictdata">Predict FWI</a>
+                <a href="/about">About</a>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form action="{{ url_for('predict_datapoint')}}" method="post" id="predictionForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="Temperature">🌡️ Temperature (°C)</label>
+                        <input type="number" step="0.1" name="Temperature" id="Temperature" placeholder="Enter temperature" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="RH">💧 Relative Humidity (%)</label>
+                        <input type="number" step="0.1" name="RH" id="RH" placeholder="Enter humidity" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Ws">🌪️ Wind Speed (km/h)</label>
+                        <input type="number" step="0.1" name="Ws" id="Ws" placeholder="Enter wind speed" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Rain">🌧️ Rainfall (mm)</label>
+                        <input type="number" step="0.1" name="Rain" id="Rain" placeholder="Enter rainfall" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="FFMC">🔥 Fine Fuel Moisture Code</label>
+                        <input type="number" step="0.1" name="FFMC" id="FFMC" placeholder="Enter FFMC" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="DMC">🌿 Duff Moisture Code</label>
+                        <input type="number" step="0.1" name="DMC" id="DMC" placeholder="Enter DMC" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ISI">💨 Initial Spread Index</label>
+                        <input type="number" step="0.1" name="ISI" id="ISI" placeholder="Enter ISI" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Classes">📊 Classes</label>
+                        <input type="number" step="0.1" name="Classes" id="Classes" placeholder="Enter classes" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Region">🗺️ Region</label>
+                        <input type="number" step="0.1" name="Region" id="Region" placeholder="Enter region" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">🚀 Predict FWI</button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing your prediction...</p>
+            </div>
+
+            {% if result %}
+            <div class="result-section show" id="result">
+                <h3>🎯 Prediction Result</h3>
+                <div class="result-value">{{ result }}</div>
+                <p>Fire Weather Index (FWI)</p>
+            </div>
+            {% endif %}
+
+            <div class="info-section">
+                <h3>📋 Parameter Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Temperature:</strong> Air temperature in Celsius
+                    </div>
+                    <div class="info-item">
+                        <strong>RH:</strong> Relative humidity percentage
+                    </div>
+                    <div class="info-item">
+                        <strong>Ws:</strong> Wind speed in kilometers per hour
+                    </div>
+                    <div class="info-item">
+                        <strong>Rain:</strong> Rainfall amount in millimeters
+                    </div>
+                    <div class="info-item">
+                        <strong>FFMC:</strong> Fine Fuel Moisture Code
+                    </div>
+                    <div class="info-item">
+                        <strong>DMC:</strong> Duff Moisture Code
+                    </div>
+                    <div class="info-item">
+                        <strong>ISI:</strong> Initial Spread Index
+                    </div>
+                    <div class="info-item">
+                        <strong>Classes:</strong> Fire danger classes
+                    </div>
+                    <div class="info-item">
+                        <strong>Region:</strong> Geographic region identifier
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

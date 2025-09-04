@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Fire Prediction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Forest Fire Prediction System</h1>
+            <p>Advanced Machine Learning for Fire Weather Index Prediction</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/predictdata">Predict FWI</a>
+            <a href="/about">About</a>
+        </div>
+
+        <div class="content">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Welcome to Our Forest Fire Prediction Platform</h2>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>🌡️ Temperature Analysis</h3>
+                    <p>Advanced algorithms analyze temperature patterns to predict fire risk with high accuracy.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>💧 Humidity Monitoring</h3>
+                    <p>Real-time humidity data processing to assess environmental conditions affecting fire spread.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🌪️ Wind Speed Tracking</h3>
+                    <p>Wind speed analysis to understand how weather conditions influence fire behavior.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🌧️ Rainfall Assessment</h3>
+                    <p>Rainfall data integration for comprehensive fire risk evaluation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔥 Fire Weather Index</h3>
+                    <p>Calculate the Fire Weather Index (FWI) using multiple environmental parameters.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📊 Machine Learning</h3>
+                    <p>Powered by advanced machine learning models trained on historical forest fire data.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="/predictdata" class="cta-button">Start Prediction Now</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Forest Fire Prediction System. Built with Flask and Machine Learning.</p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
